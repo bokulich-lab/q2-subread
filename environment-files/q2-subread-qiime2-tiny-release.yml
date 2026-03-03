@@ -4,7 +4,7 @@ channels:
 - bioconda
 dependencies:
   - qiime2-tiny
-  # Note 1: Add any additional conda dependencies here.
+  - subread
   - pip
   - pip:
   # Note 2: Add any additional pip dependencies here.
