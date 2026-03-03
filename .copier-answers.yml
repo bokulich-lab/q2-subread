@@ -1,0 +1,18 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Changes here will be overwritten by Copier
+# NEVER EDIT MANUALLY
+# INSTEAD: run a recopy or update command
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+_commit: b686c2f
+_src_path: https://github.com/caporaso-lab/plugin-template
+author_email: mziemski@ethz.ch
+author_name: Michal Ziemski
+license: BSD-3-Clause
+module_name: q2_subread
+package_name: q2-subread
+plugin_description: QIIME 2 plugin for wrapping the Subread software package.
+plugin_name: subread
+plugin_short_description: Subread integration for QIIME 2.
+project_url: https://github.com/mziemski/q2-subread
+target_distro: tiny
