@@ -15,7 +15,7 @@ import pandas as pd
 
 from q2_subread._methods import (
     align_reads,
-    feature_counts,
+    count_features,
 )
 from q2_subread.plugin_setup import plugin
 
@@ -250,12 +250,10 @@ class FeatureCountsMethodTests(unittest.TestCase):
                 (bam_dir / name).write_bytes(b"BAM")
 
             (loci_dir / "chr1.gff").write_text(
-                "##gff-version 3\n"
-                "chr1\tsrc\tgene\t1\t100\t.\t+\t.\tID=gene-1\n"
+                "##gff-version 3\n" "chr1\tsrc\tgene\t1\t100\t.\t+\t.\tID=gene-1\n"
             )
             (loci_dir / "chr2.gff").write_text(
-                "##gff-version 3\n"
-                "chr2\tsrc\tgene\t50\t200\t.\t-\t.\tID=gene-2\n"
+                "##gff-version 3\n" "chr2\tsrc\tgene\t50\t200\t.\t-\t.\tID=gene-2\n"
             )
 
             alignment_maps = _DummyAlignmentMaps(
@@ -281,7 +279,7 @@ class FeatureCountsMethodTests(unittest.TestCase):
                 return subprocess.CompletedProcess(cmd, 0, "", "")
 
             with patch("q2_subread._methods.subprocess.run", side_effect=_run):
-                observed = feature_counts(
+                observed = count_features(
                     alignment_maps,
                     loci,
                     feature_type="gene",
@@ -322,8 +320,7 @@ class FeatureCountsMethodTests(unittest.TestCase):
 
             (bam_dir / "sample-1.bam").write_bytes(b"BAM")
             (loci_dir / "chr1.gff").write_text(
-                "##gff-version 3\n"
-                "chr1\tsrc\tgene\t1\t100\t.\t+\t.\tID=gene-1\n"
+                "##gff-version 3\n" "chr1\tsrc\tgene\t1\t100\t.\t+\t.\tID=gene-1\n"
             )
 
             alignment_maps = _DummyAlignmentMaps(bam_dir, ["sample-1.bam"])
@@ -343,7 +340,7 @@ class FeatureCountsMethodTests(unittest.TestCase):
                     RuntimeError,
                     "featureCounts failed with exit code 1: annotation parsing failed",
                 ):
-                    feature_counts(alignment_maps, loci)
+                    count_features(alignment_maps, loci)
 
 
 class PluginSetupTests(unittest.TestCase):
