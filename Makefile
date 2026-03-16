@@ -1,4 +1,4 @@
-.PHONY: all lint test install dev clean distclean
+.PHONY: all lint test test-docker install dev clean distclean
 
 PYTHON ?= python
 
@@ -10,6 +10,13 @@ lint:
 
 test: all
 	py.test
+
+test-cov: all
+	python -m pytest --cov=q2_subread -n 4 && coverage xml -o coverage.xml
+
+test-docker: all
+	qiime info
+	qiime subread --help
 
 install: all
 	$(PYTHON) -m pip install -v .
