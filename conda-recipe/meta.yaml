@@ -1,0 +1,35 @@
+package:
+  name: q2-subread
+  version: {{ PLUGIN_VERSION }}
+source:
+  path: ..
+build:
+  script: make install
+requirements:
+  host:
+  - python {{ python }}
+  - setuptools
+  - versioningit
+  - wheel
+  run:
+  - subread
+  - qiime2 >={{ qiime2 }}
+  - q2-types >={{ q2_types }}
+  - q2templates >={{ q2templates }}
+  build:
+  - python {{ python }}
+  - setuptools
+  - versioningit
+test:
+  requires:
+  - parameterized
+  - pytest-xdist
+  imports:
+  - q2_subread
+  - qiime2.plugins.subread
+  commands:
+  - pytest --pyargs q2_subread -n 4
+about:
+  home: https://github.com/bokulich-lab/q2-subread
+  license: GPL-3.0-only
+  license_family: GPL
