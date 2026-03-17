@@ -36,9 +36,9 @@ citations = Citations.load("citations.bib", package="q2_subread")
 plugin = Plugin(
     name="subread",
     version=__version__,
-    website="https://github.com/mziemski/q2-subread",
+    website="https://github.com/bokulich-lab/q2-subread",
     package="q2_subread",
-    description="QIIME 2 plugin for wrapping the Subread software package.",
+    description="QIIME 2 plugin for read mapping and analysis with Subread.",
     short_description="Subread integration for QIIME 2.",
     citations=[citations["Liao-2014-featureCounts"], citations["Liao-2013-Subread"]],
 )
