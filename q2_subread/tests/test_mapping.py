@@ -60,7 +60,7 @@ class TestMapping(TestPluginBase):
         ) as mock_align, patch(
             "q2_types.per_sample_sequences._formats.BAMFormat._validate_",
         ):
-            (observed,) = subread.methods.map_reads(
+            (observed,) = subread.methods._map_reads(
                 reads=self.reads,
                 reference_index=self.ref_index,
                 threads=4,
@@ -86,8 +86,8 @@ class TestMapping(TestPluginBase):
                         indels=8,
                         multi_mapping=True,
                         max_alignments=5,
-                        minimum_fragment_length=50,
-                        maximum_fragment_length=600,
+                        min_fragment_length=50,
+                        max_fragment_length=600,
                         experiment_type="dna-seq",
                     ),
                     call(
@@ -99,8 +99,8 @@ class TestMapping(TestPluginBase):
                         indels=8,
                         multi_mapping=True,
                         max_alignments=5,
-                        minimum_fragment_length=50,
-                        maximum_fragment_length=600,
+                        min_fragment_length=50,
+                        max_fragment_length=600,
                         experiment_type="dna-seq",
                     ),
                 ]
@@ -121,11 +121,11 @@ class TestMapping(TestPluginBase):
             ValueError,
             "minimum_fragment_length cannot be greater than maximum_fragment_length",
         ):
-            subread.methods.map_reads(
+            subread.pipelines.map_reads(
                 reads=self.reads,
                 reference_index=self.ref_index,
-                minimum_fragment_length=601,
-                maximum_fragment_length=600,
+                min_fragment_length=601,
+                max_fragment_length=600,
             )
 
     def test_run_subread_align_builds_paired_end_command(self):
@@ -139,8 +139,8 @@ class TestMapping(TestPluginBase):
                 indels=12,
                 multi_mapping=True,
                 max_alignments=6,
-                minimum_fragment_length=75,
-                maximum_fragment_length=500,
+                min_fragment_length=75,
+                max_fragment_length=500,
                 experiment_type="dna-seq",
             )
 

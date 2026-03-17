@@ -15,8 +15,9 @@ import pandas as pd
 from q2_types.per_sample_sequences import (
     BAMDirFmt,
     SingleLanePerSamplePairedEndFastqDirFmt,
-    SingleLanePerSampleSingleEndFastqDirFmt,
+    SingleLanePerSampleSingleEndFastqDirFmt, SequencesWithQuality, PairedEndSequencesWithQuality,
 )
+from q2_types.sample_data import SampleData
 
 from q2_subread._types import SubreadIndexDirFmt
 
@@ -30,8 +31,8 @@ def _run_subread_align(
     indels: int,
     multi_mapping: bool,
     max_alignments: int,
-    minimum_fragment_length: Optional[int] = None,
-    maximum_fragment_length: Optional[int] = None,
+    min_fragment_length: Optional[int] = None,
+    max_fragment_length: Optional[int] = None,
     experiment_type: str = "rna-seq",
 ) -> None:
     cmd = [
@@ -58,9 +59,9 @@ def _run_subread_align(
                 "-R",
                 str(reverse_fp),
                 "-d",
-                str(minimum_fragment_length),
+                str(min_fragment_length),
                 "-D",
-                str(maximum_fragment_length),
+                str(max_fragment_length),
             ]
         )
 
@@ -95,7 +96,7 @@ def _build_alignment_result_dir(
     return result
 
 
-def map_reads(
+def _map_reads(
     reads: Union[
         SingleLanePerSamplePairedEndFastqDirFmt,
         SingleLanePerSampleSingleEndFastqDirFmt,
@@ -105,11 +106,11 @@ def map_reads(
     indels: int = 16,
     multi_mapping: bool = False,
     max_alignments: int = 3,
-    minimum_fragment_length: int = 50,
-    maximum_fragment_length: int = 600,
+    min_fragment_length: int = 50,
+    max_fragment_length: int = 600,
     experiment_type: str = "rna-seq",
 ) -> BAMDirFmt:
-    if minimum_fragment_length > maximum_fragment_length:
+    if min_fragment_length > max_fragment_length:
         raise ValueError(
             "minimum_fragment_length cannot be greater than maximum_fragment_length."
         )
@@ -131,9 +132,49 @@ def map_reads(
             indels=indels,
             multi_mapping=multi_mapping,
             max_alignments=max_alignments,
-            minimum_fragment_length=minimum_fragment_length,
-            maximum_fragment_length=maximum_fragment_length,
+            min_fragment_length=min_fragment_length,
+            max_fragment_length=max_fragment_length,
             experiment_type=experiment_type,
         )
 
     return _build_alignment_result_dir(sample_ids, _align)
+
+
+def map_reads(
+    ctx,
+    reads,
+    reference_index,
+    threads = 1,
+    indels = 16,
+    multi_mapping = False,
+    max_alignments = 3,
+    min_fragment_length = 50,
+    max_fragment_length = 600,
+    experiment_type = "rna-seq",
+    num_partitions = 1
+):
+    if reads.type <= SampleData[SequencesWithQuality]:
+        partition_action = ctx.get_action("demux", "partition_samples_single")
+    elif reads.type <= SampleData[PairedEndSequencesWithQuality]:
+        partition_action = ctx.get_action("demux", "partition_samples_paired")
+    else:
+        raise NotImplementedError(f"Unsupported reads type: {reads.type}")
+
+    map_action = ctx.get_action("subread", "_map_reads")
+    collate_action = ctx.get_action("assembly", "collate_alignments")
+
+    (partitioned_seqs,) = partition_action(reads, num_partitions)
+
+    all_maps = []
+    for seq in partitioned_seqs.values():
+        maps, = map_action(
+            reads=seq, reference_index=reference_index, threads=threads, indels=indels,
+            multi_mapping=multi_mapping, max_alignments=max_alignments,
+            min_fragment_length=min_fragment_length, max_fragment_length=max_fragment_length,
+            experiment_type=experiment_type
+        )
+        all_maps.append(maps)
+
+    (collated_maps,) = collate_action(all_maps)
+
+    return collated_maps
