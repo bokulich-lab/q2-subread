@@ -8,15 +8,8 @@
 import shutil
 import tempfile
 from pathlib import Path
-from typing import Union
 
-import pandas as pd
 from q2_types.feature_data import DNAFASTAFormat
-from q2_types.per_sample_sequences import (
-    BAMDirFmt,
-    SingleLanePerSamplePairedEndFastqDirFmt,
-    SingleLanePerSampleSingleEndFastqDirFmt,
-)
 from subprocess import run, CalledProcessError
 
 from q2_subread._types import SubreadIndexDirFmt
@@ -80,7 +73,7 @@ def build_index(
     threshold: int = 100,
     color: bool = False,
 ) -> SubreadIndexDirFmt:
-    index = _run_subread_buildindex(
+    return _run_subread_buildindex(
         reference.path,
         F=full,
         B=block,
@@ -88,4 +81,3 @@ def build_index(
         f=threshold,
         c=color,
     )
-    return index

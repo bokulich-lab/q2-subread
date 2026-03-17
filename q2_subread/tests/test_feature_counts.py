@@ -14,7 +14,7 @@ from q2_types.per_sample_sequences import BAMDirFmt
 from qiime2.plugins import subread
 from rachis.plugin.testing import TestPluginBase
 
-from q2_subread import _methods
+from q2_subread.feature_counts import _collect_bam_paths
 
 
 class TestFeatureCounts(TestPluginBase):
@@ -46,7 +46,7 @@ class TestFeatureCounts(TestPluginBase):
 
     def test_count_features_end_to_end_subprocess_error(self):
         with patch(
-            "q2_subread._methods.run",
+            "q2_subread.feature_counts.run",
             side_effect=subprocess.CalledProcessError(
                 1, "featureCounts", stderr="annotation parsing failed"
             ),
@@ -91,7 +91,7 @@ class TestFeatureCounts(TestPluginBase):
             )
 
         with patch(
-            "q2_subread._methods._run_featurecounts",
+            "q2_subread.feature_counts._run_featurecounts",
             side_effect=_mock_run_featurecounts,
         ):
             with self.assertRaisesRegex(
@@ -110,4 +110,4 @@ class TestFeatureCounts(TestPluginBase):
             ValueError,
             "No BAM files were found in the alignment map artifact.",
         ):
-            _methods._collect_bam_paths(BAMDirFmt())
+            _collect_bam_paths(BAMDirFmt())
