@@ -10,7 +10,7 @@ from rachis.plugin import model
 
 
 class SubreadIndexFileFmt(model.BinaryFileFormat):
-    def validate(self, level='max'):
+    def validate(self, level="max"):
         pass
 
 
