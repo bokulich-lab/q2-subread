@@ -106,7 +106,10 @@ class TestMapping(TestPluginBase):
                 ]
             )
             self.assertEqual(
-                [call_.kwargs["output_path"].name for call_ in mock_align.call_args_list],
+                [
+                    call_.kwargs["output_path"].name
+                    for call_ in mock_align.call_args_list
+                ],
                 [
                     "sample1_alignment.bam",
                     "sample2_alignment.bam",
