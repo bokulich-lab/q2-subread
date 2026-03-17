@@ -5,7 +5,6 @@
 #
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
-import subprocess
 import tempfile
 from pathlib import Path
 from typing import Optional
@@ -17,7 +16,7 @@ from q2_types.feature_data import DNAFASTAFormat
 from q2_types.genome_data import LociDirectoryFormat
 from q2_types.genome_data import GenomeSequencesDirectoryFormat
 from q2_types.per_sample_sequences import BAMDirFmt, BAMFormat, FastqGzFormat
-
+from subprocess import run, CalledProcessError
 
 _FEATURECOUNTS_STRAND_MODE = {
     "unstranded": "0",
@@ -217,13 +216,13 @@ def _run_featurecounts(
     cmd.extend(str(path) for path in bam_paths)
 
     try:
-        subprocess.run(
+        run(
             cmd,
             check=True,
             capture_output=True,
             text=True,
         )
-    except subprocess.CalledProcessError as exc:
+    except CalledProcessError as exc:
         detail = exc.stderr.strip() or exc.stdout.strip()
         raise RuntimeError(
             f"featureCounts failed with exit code {exc.returncode}: {detail}"
@@ -259,8 +258,15 @@ def _collect_bam_paths(alignment_maps: BAMDirFmt) -> tuple[list[str], list[Path]
 
 
 def _stage_annotation(loci: LociDirectoryFormat, reference_id: str) -> Path:
-    annotation_path = Path(loci.path) / reference_id
-    if not annotation_path.is_file():
+    loci_path = Path(loci.path)
+    fp_matches = sorted(
+        path
+        for path in loci_path.rglob("*.gff")
+        if path.is_file() and path.stem == reference_id
+    )
+    if len(fp_matches) == 1:
+        annotation_path = fp_matches[0]
+    else:
         raise ValueError(
             f"Reference annotation {reference_id!r} was not found in the loci artifact."
         )
@@ -268,7 +274,7 @@ def _stage_annotation(loci: LociDirectoryFormat, reference_id: str) -> Path:
     return annotation_path
 
 
-def _parse_featurecounts_output(
+def _parse_feature_counts(
     output_path: Path,
     sample_ids: list[str],
     bam_paths: list[Path],
@@ -340,7 +346,7 @@ def count_features(
             paired_end=paired_end,
         )
 
-        return _parse_featurecounts_output(output_path, sample_ids, bam_paths)
+        return _parse_feature_counts(output_path, sample_ids, bam_paths)
 
 
 # def align_reads(

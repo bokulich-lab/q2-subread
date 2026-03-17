@@ -1,0 +1,4 @@
+##gff-version 3
+chrToy	src	gene	1	35	.	+	.	ID=gene-a
+chrToy	src	gene	40	85	.	+	.	ID=gene-b
+chrToy	src	gene	90	140	.	+	.	ID=gene-c

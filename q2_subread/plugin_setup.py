@@ -17,7 +17,7 @@ from q2_types.per_sample_sequences import (
 )
 from q2_types.sample_data import SampleData
 from q2_subread import __version__
-from q2_subread._methods import align_reads, count_features
+from q2_subread._methods import count_features
 
 citations = Citations.load("citations.bib", package="q2_subread")
 
@@ -105,6 +105,7 @@ plugin.methods.register_function(
         "strand_mode": Str % Choices({"unstranded", "forward", "reverse"}),
         "threads": Threads,
         "paired_end": Bool,
+        "reference_id": Str,
     },
     outputs=[("feature_table", FeatureTable[Frequency])],
     input_descriptions={
@@ -130,6 +131,7 @@ plugin.methods.register_function(
             "Treat the BAM inputs as paired-end alignments and pass -p to "
             "featureCounts."
         ),
+        "reference_id": ("ID of the reference to use for feature counting."),
     },
     output_descriptions={
         "feature_table": ("A feature table of counts reported by featureCounts."),
