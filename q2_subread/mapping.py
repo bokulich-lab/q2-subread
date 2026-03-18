@@ -110,9 +110,7 @@ def map_reads(
     experiment_type: str = "rna-seq",
 ) -> BAMDirFmt:
     if min_frag_length > max_frag_length:
-        raise ValueError(
-            "min_frag_length cannot be greater than max_frag_length."
-        )
+        raise ValueError("min_frag_length cannot be greater than max_frag_length.")
 
     read_lookup = reads.manifest.view(pd.DataFrame).to_dict(orient="index")
     sample_ids = list(read_lookup.keys())
