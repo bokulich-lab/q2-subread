@@ -1,15 +1,15 @@
 [project]
 name = "q2-subread"
 authors = [
-    { name = "Michal Ziemski", email = "mziemski@ethz.ch"}
+    { name = "Michal Ziemski", email = "michal.ziemski@hest.ethz.ch"}
 ]
-description = "Subread integration for QIIME 2."
+description = "QIIME 2 plugin for read mapping and analysis with Subread."
 readme = {file = "README.md", content-type = "text/markdown"}
 license = {file = "LICENSE"}
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/mziemski/q2-subread"
+Homepage = "https://github.com/bokulich-lab/q2-subread"
 
 [project.entry-points.'qiime2.plugins']
 "q2-subread" = "q2_subread.plugin_setup:plugin"
