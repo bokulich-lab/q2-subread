@@ -7,4 +7,4 @@ dependencies:
   - subread
   - pip
   - pip:
-    - q2-subread@git+https://github.com/bokulich-lab/q2-subread.git@2026.1
+    - q2-subread@git+https://github.com/bokulich-lab/q2-subread.git@2026.1.0
