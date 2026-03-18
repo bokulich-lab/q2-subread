@@ -87,8 +87,8 @@ plugin.methods.register_function(
         "indels": Int % Range(0, None),
         "multi_mapping": Bool,
         "max_alignments": Int % Range(1, None),
-        "minimum_fragment_length": Int % Range(0, None),
-        "maximum_fragment_length": Int % Range(1, None),
+        "min_frag_length": Int % Range(0, None),
+        "max_frag_length": Int % Range(1, None),
         "experiment_type": Str % Choices({"rna-seq", "dna-seq"}),
     },
     outputs=[("alignment_maps", SampleData[AlignmentMap])],
@@ -112,11 +112,11 @@ plugin.methods.register_function(
             "Maximum number of reported alignments per read when "
             "multi-mapping output is enabled."
         ),
-        "minimum_fragment_length": (
+        "min_frag_length": (
             "Minimum expected fragment length for paired-end reads, passed "
             "to subread-align. Ignored for single-end reads."
         ),
-        "maximum_fragment_length": (
+        "max_frag_length": (
             "Maximum expected fragment length for paired-end reads, passed "
             "to subread-align. Ignored for single-end reads."
         ),

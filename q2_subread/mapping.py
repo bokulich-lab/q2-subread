@@ -30,8 +30,8 @@ def _run_subread_align(
     indels: int,
     multi_mapping: bool,
     max_alignments: int,
-    minimum_fragment_length: Optional[int] = None,
-    maximum_fragment_length: Optional[int] = None,
+    min_frag_length: Optional[int] = None,
+    max_frag_length: Optional[int] = None,
     experiment_type: str = "rna-seq",
 ) -> None:
     cmd = [
@@ -58,9 +58,9 @@ def _run_subread_align(
                 "-R",
                 str(reverse_fp),
                 "-d",
-                str(minimum_fragment_length),
+                str(min_frag_length),
                 "-D",
-                str(maximum_fragment_length),
+                str(max_frag_length),
             ]
         )
 
@@ -105,13 +105,13 @@ def map_reads(
     indels: int = 16,
     multi_mapping: bool = False,
     max_alignments: int = 3,
-    minimum_fragment_length: int = 50,
-    maximum_fragment_length: int = 600,
+    min_frag_length: int = 50,
+    max_frag_length: int = 600,
     experiment_type: str = "rna-seq",
 ) -> BAMDirFmt:
-    if minimum_fragment_length > maximum_fragment_length:
+    if min_frag_length > max_frag_length:
         raise ValueError(
-            "minimum_fragment_length cannot be greater than maximum_fragment_length."
+            "min_frag_length cannot be greater than max_frag_length."
         )
 
     read_lookup = reads.manifest.view(pd.DataFrame).to_dict(orient="index")
@@ -131,8 +131,8 @@ def map_reads(
             indels=indels,
             multi_mapping=multi_mapping,
             max_alignments=max_alignments,
-            minimum_fragment_length=minimum_fragment_length,
-            maximum_fragment_length=maximum_fragment_length,
+            min_frag_length=min_frag_length,
+            max_frag_length=max_frag_length,
             experiment_type=experiment_type,
         )
 
