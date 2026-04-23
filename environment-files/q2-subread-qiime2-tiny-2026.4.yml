@@ -1,9 +1,9 @@
 channels:
-- https://packages.qiime2.org/qiime2/2026.4/moshpit/released
+- https://packages.qiime2.org/qiime2/2026.4/tiny/released
 - conda-forge
 - bioconda
 dependencies:
-  - rachis-moshpit
+  - rachis-tiny
   - subread
   - pip
   - pip:
